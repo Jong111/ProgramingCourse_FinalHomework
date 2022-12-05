@@ -32,6 +32,8 @@ typedef struct {
 	string userAdress;
 	string userBalance;
 	string userState;
+	string userCode;
+	vector<string> userMessage;
 }user;
 
 extern int adLoginTimes;
@@ -64,4 +66,6 @@ extern void readDatasUser(vector<user>& users);
 extern int searchUserID(string userId, vector<user>users, vector<user>res);
 extern void writeDatasUser(vector<user>& users);
 extern void marketSystem();
+extern void userSignUp();
+extern string getUserID(int n);
 

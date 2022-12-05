@@ -305,8 +305,9 @@ void administrator() {
 			if (ans == "y") {
 				string info4 = "商品下架成功";
 				printInfo(info4);
-				cmds.erase(cmds.begin() + idx);
-				writeDatasCmd(cmds);
+				/*cmds.erase(cmds.begin() + idx);
+				writeDatasCmd(cmds);*/
+				cmds[idx].cmdState = "已下架";
 			}
 			if (ans == "n") {
 				string info5 = "取消下架";
@@ -380,7 +381,6 @@ void administrator() {
 						}
 					}
 					vector<cmd>temp;
-					int tt = 0;
 					// 该用户未发布过商品
 					if (toBeTakeOff.size() == 0) {
 						string info3 = "该用户暂未发布商品，因此无法下架其商品";
@@ -389,10 +389,17 @@ void administrator() {
 					}
 					// 该用户发布过商品
 					else {
-						for (int i = 0; i < toBeTakeOff.size(); i++) {
+						/*for (int i = 0; i < toBeTakeOff.size(); i++) {
 							int tempp = searchCmdID(toBeTakeOff[i], cmds, temp);
 							if (tempp != -1) {
 								cmds.erase(cmds.begin() + tempp);
+							}
+						}
+						writeDatasCmd(cmds);*/
+						for (int i = 0; i < toBeTakeOff.size(); i++) {
+							int tempp = searchCmdID(toBeTakeOff[i], cmds, temp);
+							if (tempp != -1) {
+								cmds[tempp].cmdState = "已下架";
 							}
 						}
 						writeDatasCmd(cmds);
@@ -680,6 +687,146 @@ void writeDatasUser(vector<user>& users) {
 }
 
 
+void userSignUp() {
+	vector<user>users;
+	readDatasUser(users);
+	cout << endl;
+	string info1 = "请输入用户名（用户名不超过10个字符）：";
+	int res1[2] = { 0 };
+	int res2[2] = { 0 };
+	int res3[2] = { 0 };
+	printInfo(info1);
+	appGetXY(res1);
+	string info2 = "请输入密码（密码不超过20个有效字符）：";
+	printInfo(info2);
+	appGetXY(res2);
+	string info3 = "请再次输入密码：";
+	printInfo(info3);
+	appGetXY(res3);
+	string userNamee, code, codeAgain;
+	gotoxy(res1[0], res1[1]);
+	cin >> userNamee;
+	gotoxy(res2[0], res2[1]);
+	cin >> code;
+	gotoxy(res3[0], res3[1]);
+	cin >> codeAgain;
+	l5:int flag1 = 0;
+	for (int i = 0; i < users.size(); i++) {
+		if (userNamee == users[i].userName) {
+			flag1 = 1;
+			break;
+		}
+	}
+	if (flag1 == 1) {
+		string info4 = "用户名已存在，请重新输入：";
+		printInfo(info4);
+		int res4[2] = { 0 };
+		appGetXY(res4);
+		gotoxy(res4[0], res4[1]);
+		cin >> userNamee;
+		goto l5;
+	}
+	l6:if (code != codeAgain) {
+		int res5[2] = { 0 };
+		int res6[2] = { 0 };
+		string info5 = "两次密码不一致，请重新输入：";
+		printInfo(info5);
+		appGetXY(res5);
+		string info6 = "请再次确认：";
+		printInfo(info6);
+		appGetXY(res6);
+		gotoxy(res5[0], res5[1]);
+		cin >> code;
+		gotoxy(res6[0], res6[1]);
+		cin >> codeAgain;
+		goto l6;
+	}
+	l7:if (userNamee.length() > 10) {
+		string info7 = "用户名过长，请重新输入：";
+		printInfo(info7);
+		int res7[2] = { 0 };
+		appGetXY(res7);
+		gotoxy(res7[0], res7[1]);
+		cin >> userNamee;
+		goto l7;
+	}
+	if (code.length() > 20) {
+		int res8[2] = { 0 };
+		int res9[2] = { 0 };
+		string info8 = "密码过长，请重新输入：";
+		string info9 = "请再次确认：";
+		printInfo(info8);
+		appGetXY(res8);
+		printInfo(info9);
+		appGetXY(res9);
+		gotoxy(res8[0], res8[1]);
+		cin >> code;
+		gotoxy(res9[0], res9[1]);
+		cin >> codeAgain;
+		goto l6;
+	}
+	string info10 = "请继续完善您的个人信息完成注册";
+	printInfo(info10);
+	int res10[2] = { 0 };
+	int res11[2] = { 0 };
+	string info11 = "请输入您的电话号码：";
+	string info12 = "请输入您的地址：";
+	printInfo(info11);
+	appGetXY(res10);
+	printInfo(info12);
+	appGetXY(res11);
+	gotoxy(res10[0], res10[1]);
+	string number, adress;
+	// 这里还没有对电话号码和地址的格式进行判断
+	cin >> number;
+	gotoxy(res11[0], res11[1]);
+	cin >> adress;
+	user tmp;
+	vector<string> message;
+	string u = "U";
+	tmp.userID = u + getUserID(users.size());
+	tmp.userName = userNamee;
+	tmp.userContact = number;
+	tmp.userAdress = adress;
+	tmp.userBalance = "0.0";
+	tmp.userState = "正常";
+	tmp.userCode = code;
+	tmp.userMessage = message;
+	users.push_back(tmp);
+	writeDatasUser(users);
+	string info13 = "注册成功，按y返回主菜单：";
+	int res13[2] = { 0 };
+	printInfo(info13);
+	appGetXY(res13);
+	gotoxy(res13[0], res13[1]);
+	string ans;
+	ans = handleInvalidInput_y();
+	if (ans == "y") {
+		Sleep(500);
+		system("cls");
+		marketSystem();
+	}
+}
+
+
+string getUserID(int n) {
+	if (n < 9) {
+		string tmp1 = "00";
+		string num = to_string(n + 1);
+		return tmp1 + num;
+	}
+	else if (n >= 9 && n < 99) {
+		string tmp2 = "0";
+		string num = to_string(n + 1);
+		return tmp2 + num;
+	}
+	else if (n >= 99) {
+		string num = to_string(n + 1);
+		return num;
+	}
+}
+
+
 void marketSystem() {
 	l1: switch (home()) {
 	case AD_LOGIN:
@@ -691,7 +838,7 @@ void marketSystem() {
 		break;
 	case USER_SIGN_UP:
 		//TODO
-		cout << "Not Implemented";
+		userSignUp();
 		break;
 	case USER_LOGIN:
 		//TODO
