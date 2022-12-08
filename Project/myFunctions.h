@@ -11,6 +11,7 @@ typedef struct {
 	string sellerID;
 	string cmdNum;
 	string cmdState;
+	string cmdDiscription;
 } cmd;
 
 
@@ -33,10 +34,12 @@ typedef struct {
 	string userBalance;
 	string userState;
 	string userCode;
-	vector<string> userMessage;
+	/*int messageNum;
+	vector<string> userMessage;*/
 }user;
 
 extern int adLoginTimes;
+extern int userLoginTimes;
 extern void appGetXY(int* res);
 extern void gotoxy(int x, int y);
 extern int string2ascii(string& str);
@@ -63,9 +66,20 @@ extern void printOrders(vector<order>& orders);
 extern void printUsers(vector<user>& users, int type);
 extern void showAllUsers();
 extern void readDatasUser(vector<user>& users);
-extern int searchUserID(string userId, vector<user>users, vector<user>res);
+extern int searchUserID(string userId, vector<user>&users, vector<user>&res);
 extern void writeDatasUser(vector<user>& users);
 extern void marketSystem();
 extern void userSignUp();
-extern string getUserID(int n);
+extern string getID(int n);
+extern void searchUserName(string userName, vector<user>&users, vector<user> &res);
+extern void userLogin(string&uid);
+extern void userOp(string uid);
+extern int userHome();
+extern void buyer(string uid);
+extern void showAllCommodities4User();
+extern void printCommodities4User(vector<cmd>& cmds);
+extern void back2Buyer(string uid);
+extern void showAllOrders4User(string&uID);
+extern void displayDiscriptionofCmd(vector<cmd>& res);
+extern string controlDigits(string n);
 
