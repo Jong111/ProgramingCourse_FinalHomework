@@ -39,7 +39,6 @@ typedef struct {
 }user;
 
 extern int adLoginTimes;
-extern int userLoginTimes;
 extern void appGetXY(int* res);
 extern void gotoxy(int x, int y);
 extern int string2ascii(string& str);
@@ -72,14 +71,22 @@ extern void marketSystem();
 extern void userSignUp();
 extern string getID(int n);
 extern void searchUserName(string userName, vector<user>&users, vector<user> &res);
-extern void userLogin(string&uid);
+extern void userLogin(string& uid, int userLoginTimes);
 extern void userOp(string uid);
 extern int userHome();
 extern void buyer(string uid);
-extern void showAllCommodities4User();
-extern void printCommodities4User(vector<cmd>& cmds);
+extern void showAllCommodities4Buyer();
+extern void printCommodities4Buyer(vector<cmd>& cmds);
 extern void back2Buyer(string uid);
-extern void showAllOrders4User(string&uID);
+extern void showAllOrders4Buyer(string&uID);
 extern void displayDiscriptionofCmd(vector<cmd>& res);
 extern string controlDigits(string n);
+extern void seller(string uid);
+extern void back2Seller(string uid);
+extern void showAllOrders4Seller(string& uID);
+extern void showAllCommodities4Seller(string&uid);
+extern void printCommodities4Seller(vector<cmd>& cmds, string& uid);
+extern string handleInvalidInput_12();
+extern void displayDiscriptionofCmd4Seller(vector<cmd>& res);
+extern string displayHelper(string&str, int a);
 

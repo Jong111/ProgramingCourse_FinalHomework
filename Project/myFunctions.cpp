@@ -20,7 +20,7 @@ using namespace std;
 
 
 int adLoginTimes = 0;
-int userLoginTimes = 0;
+// int userLoginTimes = 0;
 
 
 string END = "END";
@@ -65,8 +65,6 @@ int string2ascii(string& str) {
 
 // print a line of "="
 void printDisplay() {
-	int res[2] = { 0 };
-	int flag = 0;
 	for (int i = 0; i < 10; i++) {
 		cout << "   ";
 	}
@@ -78,8 +76,6 @@ void printDisplay() {
 
 // print a line of "*"
 void printDisplay2() {
-	int res[2] = { 0 };
-	int flag = 0;
 	for (int i = 0; i < 10; i++) {
 		cout << "   ";
 	}
@@ -87,6 +83,7 @@ void printDisplay2() {
 		cout << "*";
 	}
 }
+
 
 int home() {
 	printDisplay();
@@ -133,10 +130,21 @@ void administratorLogin() {
 		else {
 			string info4 = "-----登录失败-----";
 			printInfo(info4);
-			string info5 = "请重新登录";
+			string info6 = "是否退出登录？[y/n] ";
 			cout << endl;
-			printInfo(info5);
-			administratorLogin();
+			printInfo(info6);
+			string ans = handleInvalidInput_yn();
+			if (ans == "n") {
+				string info5 = "请重新登录";
+				cout << endl;
+				printInfo(info5);
+				administratorLogin();
+			}
+			else if (ans == "y") {
+				Sleep(500);
+				system("cls");
+				marketSystem();
+			}
 		}
 	}
 	else {
@@ -163,10 +171,21 @@ void administratorLogin() {
 		else {
 			string info4 = "-----登录失败-----";
 			printInfo(info4);
-			string info5 = "请重新登录";
+			string info6 = "是否退出登录？[y/n] ";
 			cout << endl;
-			printInfo(info5);
-			administratorLogin();
+			printInfo(info6);
+			string ans = handleInvalidInput_yn();
+			if (ans == "n") {
+				string info5 = "请重新登录";
+				cout << endl;
+				printInfo(info5);
+				administratorLogin();
+			}
+			else if (ans == "y") {
+				Sleep(500);
+				system("cls");
+				marketSystem();
+			}
 		}
 	}
 }
@@ -217,6 +236,32 @@ string handleInvalidInput_yn() {
 }
 
 
+string handleInvalidInput_12() {
+	while (1) {
+		string tmpAns;
+		cin >> tmpAns;
+		if (tmpAns == "1") {
+			return tmpAns;
+			break;
+		}
+		else if (tmpAns == "2") {
+			return tmpAns;
+			break;
+		}
+		else {
+			cout << endl;
+			for (int i = 0; i < 10; i++) {
+				cout << "   ";
+			}
+			cout << "输入不合法，请输入1或2来选择一个操作：";
+			int res4[2] = { 0 };
+			appGetXY(res4);
+			gotoxy(res4[0], res4[1]);
+		}
+	}
+}
+
+
 void back2Ad() {
 	int res2[2] = { 0 };
 	cout << endl;
@@ -232,6 +277,7 @@ void back2Ad() {
 		administrator();
 	}
 }
+
 
 void administrator() {
 	printDisplay();
@@ -301,7 +347,7 @@ void administrator() {
 			printInfo(info2);
 			cout << endl;
 			printCommodities(res);
-			string info3 = "请选择[y/n]";
+			string info3 = "请选择[y/n] ";
 			printInfo(info3);
 			int res3[2] = { 0 };
 			appGetXY(res3);
@@ -314,8 +360,9 @@ void administrator() {
 				/*cmds.erase(cmds.begin() + idx);
 				writeDatasCmd(cmds);*/
 				cmds[idx].cmdState = "已下架";
+				writeDatasCmd(cmds);
 			}
-			if (ans == "n") {
+			else if (ans == "n") {
 				string info5 = "取消下架";
 				printInfo(info5);
 			}
@@ -367,7 +414,7 @@ void administrator() {
 				vector<user> user_vec;
 				user_vec.push_back(users[idx]);
 				printUsers(user_vec, 1);
-				string info5 = "请选择[y/n]";
+				string info5 = "请选择[y/n] ";
 				printInfo(info5);
 				int res3[2] = { 0 };
 				appGetXY(res3);
@@ -488,6 +535,7 @@ void printSearchFailed() {
 	cout << endl;
 }
 
+
 // Read datas from commodity.txt to cmds, 这里要解决一下输入中途文件就结束了的问题
 void readDatasCmd(vector<cmd>&cmds) {
 	ifstream f;
@@ -519,7 +567,7 @@ void writeDatasCmd(vector<cmd>& cmds) {
 		cout << "Error: Failed to open the file" << endl;
 		exit(-1);
 	}
-	int tt = 0;
+	// int tt = 0;
 	for (int i = 0; i < cmds.size(); i++) {
 		of << cmds[i].cmdID << ' ' << cmds[i].cmdName << ' ' << controlDigits(cmds[i].cmdPrice) << ' ' << cmds[i].cmdDay << ' ' << cmds[i].cmdNum << ' ' << cmds[i].sellerID << ' ' << cmds[i].cmdState << ' ' << cmds[i].cmdDiscription << endl;
 	}
@@ -529,7 +577,7 @@ void writeDatasCmd(vector<cmd>& cmds) {
 
 void printCommodities(vector<cmd>& cmds) {
 	printDisplay2();
-	string str = "商品ID     名称           价格      上架时间     数量     卖家ID    商品状态";
+	string str = "商品ID     名称                   价格       上架时间     数量       卖家ID     商品状态";
 	cout << endl;
 	for (int i = 0; i < 15; i++) {
 		cout << "   ";
@@ -537,7 +585,11 @@ void printCommodities(vector<cmd>& cmds) {
 	cout << str << endl;
 	for (int i = 0; i < cmds.size(); i++) {
 		cout << "                                             ";
-		cout << cmds[i].cmdID << "     " << cmds[i].cmdName << "     " << cmds[i].cmdPrice << "     " << cmds[i].cmdDay << "     " << cmds[i].cmdNum << "       " << cmds[i].sellerID << "       " << cmds[i].cmdState << endl;
+		string tmp = " ";
+		string blank1 = displayHelper(tmp, 20 - cmds[i].cmdName.length());
+		string blank2 = displayHelper(tmp, 5 - cmds[i].cmdPrice.length());
+		string blank3 = displayHelper(tmp, 4 - cmds[i].cmdNum.length());
+		cout << cmds[i].cmdID << "     " << cmds[i].cmdName << "     " + blank1 << cmds[i].cmdPrice << "     " + blank2 << cmds[i].cmdDay << "     " << cmds[i].cmdNum << "       " + blank3 << cmds[i].sellerID << "       " << cmds[i].cmdState << endl;
 	}
 	printDisplay2();
 }
@@ -608,7 +660,7 @@ void writeDatasOrder(vector<order>& orders) {
 		cout << "Error: Failed to open the file" << endl;
 		exit(-1);
 	}
-	int tt = 0;
+	// int tt = 0;
 	for (int i = 0; i < orders.size(); i++) {
 		of << orders[i].orderID << ' ' << orders[i].cmdID << ' ' << controlDigits(orders[i].orderPrice) << ' ' << orders[i].orderNum << ' ' << orders[i].orderDay << ' ' << orders[i].sellerID << ' ' << orders[i].buyerID << endl;
 	}
@@ -706,7 +758,7 @@ void writeDatasUser(vector<user>& users) {
 		cout << "Error: Failed to open the file" << endl;
 		exit(-1);
 	}
-	int tt = 0;
+	// int tt = 0;
 	for (int i = 0; i < users.size(); i++) {
 		of << users[i].userID << ' ' << users[i].userName << ' ' << users[i].userContact << ' ' << users[i].userAdress << ' ' << controlDigits(users[i].userBalance) << ' ' << users[i].userState << ' ' << users[i].userCode << endl;
 	}
@@ -855,7 +907,7 @@ string getID(int n) {
 }
 
 
-void userLogin(string&uid) {
+void userLogin(string&uid, int userLoginTimes) {
 	vector<user>users;
 	readDatasUser(users);
 	if (userLoginTimes == 0) {
@@ -875,19 +927,31 @@ void userLogin(string&uid) {
 		cin >> ans2;
 		vector<user> res;
 		searchUserName(ans1, users, res);
-		// int ttttt = 0;
 		if (res.size()>0 && ans2 == res[0].userCode) {
+			int tt = 0;
+			uid = res[0].userID;
+			int ttt = 0;
 			string info3 = "-----登录成功-----";
 			printInfo(info3);
-			uid = res[0].userID;
 		}
 		else {
 			string info4 = "-----登录失败-----";
 			printInfo(info4);
-			string info5 = "请重新登录";
+			string info6 = "是否退出登录？[y/n] ";
 			cout << endl;
-			printInfo(info5);
-			userLogin(uid);
+			printInfo(info6);
+			string ans = handleInvalidInput_yn();
+			if (ans == "n") {
+				string info5 = "请重新登录";
+				cout << endl;
+				printInfo(info5);
+				userLogin(uid, userLoginTimes);
+			}
+			else if (ans == "y") {
+				Sleep(500);
+				system("cls");
+				marketSystem();
+			}
 		}
 	}
 	else {
@@ -909,18 +973,29 @@ void userLogin(string&uid) {
 		cin >> ans2;
 		vector<user> res;
 		searchUserName(ans1, users, res);
-		// int ttt = 0;
 		if (res.size() > 0 && ans2 == res[0].userCode) {
+			uid = res[0].userID;
 			string info3 = "-----登录成功-----";
 			printInfo(info3);
 		}
 		else {
 			string info4 = "-----登录失败-----";
 			printInfo(info4);
-			string info5 = "请重新登录";
+			string info6 = "是否退出登录？[y/n] ";
 			cout << endl;
-			printInfo(info5);
-			userLogin(uid);
+			printInfo(info6);
+			string ans = handleInvalidInput_yn();
+			if (ans == "n") {
+				string info5 = "请重新登录";
+				cout << endl;
+				printInfo(info5);
+				userLogin(uid, userLoginTimes);
+			}
+			else if (ans == "y") {
+				Sleep(500);
+				system("cls");
+				marketSystem();
+			}
 		}
 	}
 }
@@ -957,9 +1032,9 @@ int userHome() {
 }
 
 
-void printCommodities4User(vector<cmd>&cmds) {
+void printCommodities4Buyer(vector<cmd>&cmds) {
 	printDisplay2();
-	string str = "商品ID     名称           价格      上架时间     数量     卖家ID";
+	string str = "商品ID     名称                   价格      上架时间          卖家ID";
 	cout << endl;
 	for (int i = 0; i < 15; i++) {
 		cout << "   ";
@@ -968,7 +1043,11 @@ void printCommodities4User(vector<cmd>&cmds) {
 	for (int i = 0; i < cmds.size(); i++) {
 		if (cmds[i].cmdState == "销售中") {
 			cout << "                                             ";
-			cout << cmds[i].cmdID << "     " << cmds[i].cmdName << "     " << cmds[i].cmdPrice << "     " << cmds[i].cmdDay << "     " << cmds[i].cmdNum << "       " << cmds[i].sellerID << endl;
+			string tmp = " ";
+			string blank1 = displayHelper(tmp, 20 - cmds[i].cmdName.length());
+			string blank2 = displayHelper(tmp, 5 - cmds[i].cmdPrice.length());
+			string blank3 = displayHelper(tmp, 4 - cmds[i].cmdNum.length());
+			cout << cmds[i].cmdID << "     " << cmds[i].cmdName << "     " + blank1 << cmds[i].cmdPrice << "     " + blank2 << cmds[i].cmdDay << "       " + blank3 << cmds[i].sellerID << endl;
 		}
 		else continue;
 	}
@@ -976,10 +1055,49 @@ void printCommodities4User(vector<cmd>&cmds) {
 }
 
 
-void showAllCommodities4User() {
+void showAllCommodities4Buyer() {
 	vector<cmd> cmds;
 	readDatasCmd(cmds);
-	printCommodities4User(cmds);
+	printCommodities4Buyer(cmds);
+}
+
+
+void showAllCommodities4Seller(string&uid) {
+	vector<cmd> cmds;
+	readDatasCmd(cmds);
+	printCommodities4Seller(cmds, uid);
+}
+
+
+string displayHelper(string&str, int a) {
+	string res = "";
+	for (int i = 0; i < a; i++) {
+		res += str;
+	}
+	return res;
+}
+
+
+void printCommodities4Seller(vector<cmd>& cmds, string&uid) {
+	printDisplay2();
+	string str = "商品ID       名称                 价格    数量    上架时间           商品状态";
+	cout << endl;
+	for (int i = 0; i < 15; i++) {
+		cout << "   ";
+	}
+	cout << str << endl;
+	for (int i = 0; i < cmds.size(); i++) {
+		if (cmds[i].sellerID == uid) {
+			cout << "                                             ";
+			string tmp = " ";
+			string blank1 = displayHelper(tmp, 20 - cmds[i].cmdName.length());
+			string blank2 = displayHelper(tmp, 5 - cmds[i].cmdPrice.length());
+			string blank3 = displayHelper(tmp, 4 - cmds[i].cmdNum.length());
+			cout << cmds[i].cmdID << "     " << cmds[i].cmdName << "     " + blank1 << cmds[i].cmdPrice << "     " + blank2 << cmds[i].cmdNum << "     " << cmds[i].cmdDay << "       " + blank3 << cmds[i].cmdState << endl;
+		}
+		else continue;
+	}
+	printDisplay2();
 }
 
 
@@ -1000,12 +1118,42 @@ void back2Buyer(string uid) {
 }
 
 
-void showAllOrders4User(string&uID) {
+void back2Seller(string uid) {
+	int res2[2] = { 0 };
+	cout << endl;
+	string info1 = "按y返回卖家操作界面：";
+	printInfo(info1);
+	appGetXY(res2);
+	gotoxy(res2[0], res2[1]);
+	string ans;
+	ans = handleInvalidInput_y();
+	if (ans == "y") {
+		Sleep(500);
+		system("cls");
+		seller(uid);
+	}
+}
+
+
+void showAllOrders4Buyer(string&uID) {
 	vector<order> orders;
 	readDatasOrder(orders);
 	vector<order> res;
 	for (int i = 0; i < orders.size(); i++) {
 		if (orders[i].buyerID == uID) {
+			res.push_back(orders[i]);
+		}
+	}
+	printOrders(res);
+}
+
+
+void showAllOrders4Seller(string& uID) {
+	vector<order> orders;
+	readDatasOrder(orders);
+	vector<order> res;
+	for (int i = 0; i < orders.size(); i++) {
+		if (orders[i].sellerID == uID) {
 			res.push_back(orders[i]);
 		}
 	}
@@ -1035,7 +1183,7 @@ void buyer(string uid) {
 	switch (operation) {
 	case 49: {
 		//TODO
-		showAllCommodities4User();
+		showAllCommodities4Buyer();
 		back2Buyer(uid);
 		break;
 	}
@@ -1046,19 +1194,20 @@ void buyer(string uid) {
 		string info1 = "请输入商品ID：";
 		printInfo(info1);
 		appGetXY(res1);
-		string info2 = "请输入数量：";
+		string info2 = "请输入数量（购买数量不可为0且不可以0开头）：";
 		printInfo(info2);
 		appGetXY(res2);
 		string id, num;
 		gotoxy(res1[0], res1[1]);
 		cin >> id;
-		l1:gotoxy(res2[0], res2[1]);
+		gotoxy(res2[0], res2[1]);
 		cin >> num;
 		// 检查num输入是否合法
-		for (int i = 0; i < num.length(); i++) {
+		l1:for (int i = 0; i < num.length(); i++) {
 			if (num[0] == '0' || num[i] > '9' || num[i] < '0') {
-				string info3 = "输入数量不合法，请重新输入";
+				string info3 = "输入数量不合法，请重新输入：";
 				printInfo(info3);
+				cin >> num;
 				goto l1;
 			}
 		}
@@ -1070,9 +1219,9 @@ void buyer(string uid) {
 		int idxx = -1;
 		idxx = searchUserID(uid, users, thisUser);
 		readDatasCmd(cmds);
-		int ttt = 0;
 		int idx = -1;
 		idx = searchCmdID(id, cmds, res);
+		// int ttt = 0;
 		if (idx >= 0 && res[0].cmdState == "销售中") {
 			if (atof(res[0].cmdNum.c_str()) < atof(num.c_str())) {
 				string info7 = "抱歉，该商品仅剩"+res[0].cmdNum+"件，您想买的件数超出剩余量";
@@ -1102,12 +1251,14 @@ void buyer(string uid) {
 				orders.push_back(tmp);
 				writeDatasOrder(orders);
 				// 更新用户文件-买家
+				// int tt = 0;
 				users[idxx].userBalance = to_string(atof(thisUser[0].userBalance.c_str()) - atof(num.c_str()) * atof(res[0].cmdPrice.c_str()));
 				// 更新用户文件-卖家
 				int idx2 = -1;
 				vector<user>resus;
 				idx2 = searchUserID(res[0].sellerID, users, resus);
 				if (idx2 != -1) {
+					int tttt = 0;
 					users[idx2].userBalance = to_string(atof(resus[0].userBalance.c_str()) + atof(num.c_str()) * atof(res[0].cmdPrice.c_str()));
 				}
 				writeDatasUser(users);
@@ -1149,7 +1300,7 @@ void buyer(string uid) {
 				}
 			}
 			if (res4User.size() > 0) {
-				printCommodities4User(res4User);
+				printCommodities4Buyer(res4User);
 				back2Buyer(uid);
 			}
 			else {
@@ -1169,7 +1320,7 @@ void buyer(string uid) {
 	}
 	case 52: {
 		//TODO
-		showAllOrders4User(uid);
+		showAllOrders4Buyer(uid);
 		back2Buyer(uid);
 		break;
 	}
@@ -1187,7 +1338,11 @@ void buyer(string uid) {
 		readDatasCmd(cmds);
 		idx=searchCmdID(cid, cmds, res);
 		if(res.size()>0) {
-			displayDiscriptionofCmd(res);
+			if (res[0].cmdState != "销售中") {
+				string info3 = "抱歉，该商品暂不销售";
+				printInfo(info3);
+			}
+			else displayDiscriptionofCmd(res);
 			back2Buyer(uid);
 		}
 		else {
@@ -1276,16 +1431,358 @@ void displayDiscriptionofCmd(vector<cmd>&res) {
 }
 
 
+void displayDiscriptionofCmd4Seller(vector<cmd>& res) {
+	cout << endl;
+	printDisplay2();
+	string info1 = "商品ID：" + res[0].cmdID;
+	string info2 = "商品名称：" + res[0].cmdName;
+	string info3 = "商品价格：" + res[0].cmdPrice;
+	string info5 = "商品描述：" + res[0].cmdDiscription;
+	printInfo(info1);
+	printInfo(info2);
+	printInfo(info3);
+	printInfo(info5);
+	cout << endl;
+	printDisplay2();
+}
+
+
+void seller(string uid) {
+	printDisplay();
+	cout << endl;
+	string str = "1.发布商品     2.查看发布商品     3.修改商品信息     4.下架商品     5.查看历史订单    6.返回用户主界面";
+	for (int i = 0; i < 12; i++) {
+		cout << "   ";
+	}
+	cout << str;
+	cout << endl;
+	printDisplay();
+	cout << endl << endl;
+	string info1 = "请输入操作：";
+	printInfo(info1);
+	int res1[2] = { 0 };
+	appGetXY(res1);
+	string tmpOperation;
+	gotoxy(res1[0], res1[1]);
+	cin >> tmpOperation;
+	int operation = string2ascii(tmpOperation);
+	switch (operation) {
+	case 49: {
+		//TODO
+		int times = 0;
+		string info1 = "请输入商品名称：";
+		string info2 = "请输入商品价格，商品价格不可以0开头（01之间的小数除外）：";
+		string info3 = "请输入商品数量，商品数量不可为0且不可以0开头：";
+		string info4 = "请输入商品描述：";
+		string name, price, num, discription;
+		int res1[2] = { 0 };
+		int res2[2] = { 0 };
+		int res3[2] = { 0 };
+		int res4[2] = { 0 };
+		printInfo(info1);
+		appGetXY(res1);
+		printInfo(info2);
+		appGetXY(res2);
+		gotoxy(res1[0], res1[1]);
+		cin >> name;
+		gotoxy(res2[0], res2[1]);
+		cin >> price;
+		// 判断价格是否合法
+		l1:int flag = 1;
+		int decNum = 0;
+		if (price.length() >= 2 && price[0] == '0' && price[1] != '.') flag = 0;
+		for (int i = 0; i < price.length(); i++) {
+			if (price[i] < '0' || price[i] > '9') {
+				if (price[i] == '.' && decNum == 0 && i != price.length() - 1) {
+					decNum++;
+					continue;
+				}
+				else {
+					flag = 0;
+					break;
+				}
+			}
+		}
+		if (flag == 0) {
+			int res4[2] = { 0 };
+			string info13 = "您输入的价钱格式有误，请重新输入：";
+			printInfo(info13);
+			cin >> price;
+			goto l1;
+		}
+		printInfo(info3);
+		appGetXY(res3);
+		gotoxy(res3[0], res3[1]);
+		cin >> num;
+		// 判断数量是否合法
+		l3:for (int i = 0; i < num.length(); i++) {
+			if (num[0] == '0' || num[i] > '9' || num[i] < '0') {
+				string info14 = "输入数量不合法，请重新输入：";
+				printInfo(info14);
+				cin >> num;
+				goto l3;
+			}
+		}
+		printInfo(info4);
+		appGetXY(res4);
+		gotoxy(res4[0], res4[1]);
+		cin >> discription;
+		cout << endl;
+		string info5 = "请确认发布的商品信息无误！";
+		cout << endl;
+		printDisplay2();
+		string info6 = "商品名称：" + name;
+		string info7 = "商品价格：" + controlDigits(price);
+		string info8 = "商品数量：" + num;
+		string info9 = "商品描述：" + discription;
+		printInfo(info6);
+		printInfo(info7);
+		printInfo(info8);
+		printInfo(info9);
+		cout << endl;
+		printDisplay2();
+		cout << endl;
+		string info10 = "您确认要发布商品吗？[y/n] ";
+		int res10[2] = { 0 };
+		printInfo(info10);
+		appGetXY(res10);
+		string ans;
+		gotoxy(res10[0], res10[1]);
+		ans = handleInvalidInput_yn();
+		if (ans == "y") {
+			vector<cmd>cmds, res;
+			readDatasCmd(cmds);
+			cmd tmp;
+			string tmpM = "M";
+			string tmpd = "2022-02-16";
+			tmp.cmdID = tmpM + getID(cmds.size());
+			tmp.cmdName = name;
+			tmp.cmdPrice = price;
+			tmp.cmdDay = tmpd;
+			tmp.sellerID = uid;
+			tmp.cmdNum = num;
+			tmp.cmdState = "销售中";
+			tmp.cmdDiscription = discription;
+			cmds.push_back(tmp);
+			writeDatasCmd(cmds);
+			string info11 = "商品发布成功！";
+			printInfo(info11);
+		}
+		else if (ans == "n") {
+			string info12 = "取消发布";
+			printInfo(info12);
+		}
+		back2Seller(uid);
+		break;
+	}
+	case 50: {
+		//TODO
+		showAllCommodities4Seller(uid);
+		back2Seller(uid);
+		break;
+	}
+	case 51: {
+		//TODO
+		string info1 = "请输入被修改商品的ID：";
+		string info2 = "请输入被修改商品的属性（1.价格  2.描述）：";
+		int res1[2] = { 0 };
+		int res2[2] = { 0 };
+		printInfo(info1);
+		appGetXY(res1);
+		printInfo(info2);
+		appGetXY(res2);
+		string id, attribute;
+		gotoxy(res1[0], res1[1]);
+		cin >> id;
+		vector<cmd>cmds, res;
+		readDatasCmd(cmds);
+		int idx = -1;
+		idx = searchCmdID(id, cmds, res);
+		gotoxy(res2[0], res2[1]);
+		attribute = handleInvalidInput_12();
+		if (res.size() > 0 && res[0].sellerID==uid) {
+			if (attribute == "1") {
+				int res3[2] = { 0 };
+				string price;
+				string info3 = "请输入被修改商品的价格，商品价格不可以0开头（01之间的小数除外）：";
+				printInfo(info3);
+				appGetXY(res3);
+				gotoxy(res3[0], res3[1]);
+				cin >> price;
+				// 判断价格是否格式正确
+				l2:int flag = 1;
+				int decNum = 0;
+				if (price.length() >= 2 && price[0] == '0' && price[1] != '.') flag = 0;
+				for (int i = 0; i < price.length(); i++) {
+					if (price[i] < '0' || price[i] > '9') {
+						if (price[i] == '.' && decNum==0 && i != price.length() - 1) {
+							decNum++;
+							continue;
+						}
+						else {
+							flag = 0;
+							break;
+						}
+					}
+				}
+				if (flag == 0) {
+					int res4[2] = { 0 };
+					string info4 = "您输入的价钱格式有误，请重新输入：";
+					printInfo(info4);
+					cin >> price;
+					goto l2;
+				}
+				string info5 = "请确认修改的商品信息无误！";
+				printInfo(info5);
+				cout << endl;
+				vector<cmd>ress;
+				cmd tmp = res[0];
+				tmp.cmdPrice = controlDigits(price);
+				ress.push_back(tmp);
+				displayDiscriptionofCmd4Seller(ress);
+				cout << endl;
+				string info6 = "确认修改？[y/n] ";
+				printInfo(info6);
+				string ans;
+				ans = handleInvalidInput_yn();
+				if (ans == "y") {
+					cmds[idx].cmdPrice = price;
+					writeDatasCmd(cmds);
+					string info7 = "修改成功！";
+					printInfo(info7);
+				}
+				else if (ans == "n") {
+					string info8 = "已取消修改";
+					printInfo(info8);
+				}
+			}
+			else if (attribute == "2") {
+				int res9[2] = { 0 };
+				string info9 = "请输入被修改商品的描述：";
+				printInfo(info9);
+				appGetXY(res9);
+				string discription;
+				gotoxy(res9[0], res9[1]);
+				cin >> discription;
+				string ans;
+				string info15 = "确认修改？[y/n] ";
+				printInfo(info15);
+				ans = handleInvalidInput_yn();
+				if (ans == "y") {
+					cmds[idx].cmdDiscription = discription;
+					writeDatasCmd(cmds);
+					string info10 = "修改成功！";
+					printInfo(info10);
+				}
+				else if (ans == "n") {
+					string info11 = "已取消修改";
+					printInfo(info11);
+				}
+			}
+		}
+		else if(res.size()==0) {
+			string info12 = "未找到该商品，即将为您返回卖家操作界面";
+			printInfo(info12);
+		}
+		else if (res[0].sellerID != uid) {
+			string info13 = "您不具备修改该商品的权限，因为您不是该商品的发布者";
+			printInfo(info13);
+		}
+		back2Seller(uid);
+		break;
+	}
+	case 52: {
+		//TODO
+		string info1 = "请输入要下架的商品ID：";
+		printInfo(info1);
+		int res2[2] = { 0 };
+		appGetXY(res2);
+		gotoxy(res2[0], res2[1]);
+		string cmdId;
+		cin >> cmdId;
+		vector<cmd> cmds, res;
+		readDatasCmd(cmds);
+		int idx = -1;
+		idx = searchCmdID(cmdId, cmds, res);
+		if (res.size() > 0 && res[0].sellerID==uid && res[0].cmdState!="已下架") {
+			string info2 = "确定要下架该商品吗？";
+			printInfo(info2);
+			cout << endl;
+			printCommodities(res);
+			string info3 = "请选择[y/n] ";
+			printInfo(info3);
+			int res3[2] = { 0 };
+			appGetXY(res3);
+			gotoxy(res3[0], res3[1]);
+			string ans;
+			ans = handleInvalidInput_yn();
+			if (ans == "y") {
+				string info4 = "商品下架成功";
+				printInfo(info4);
+				/*cmds.erase(cmds.begin() + idx);
+				writeDatasCmd(cmds);*/
+				cmds[idx].cmdState = "已下架";
+				writeDatasCmd(cmds);
+			}
+			else if (ans == "n") {
+				string info5 = "取消下架";
+				printInfo(info5);
+			}
+		}
+		else if(res.size()==0) {
+			string info12 = "未找到该商品，即将为您返回卖家操作界面";
+			printInfo(info12);
+		}
+		else if (res[0].sellerID != uid) {
+			string info13 = "您不具备下架该商品的权限，因为您不是该商品的发布者";
+			printInfo(info13);
+		}
+		else if (res[0].cmdState == "已下架") {
+			string info14 = "该商品在此之前已经被下架，不能重复下架";
+			printInfo(info14);
+		}
+		back2Seller(uid);
+		break;
+	}
+	case 53: {
+		//TODO
+		showAllOrders4Seller(uid);
+		back2Seller(uid);
+		break;
+	}
+	case 54: {
+		//TODO
+		Sleep(500);
+		system("cls");
+		userOp(uid);
+		break;
+	}
+	default: {
+		for (int i = 0; i < 10; i++) {
+			cout << "   ";
+		}
+		cout << "没有该操作，请重新输入操作";
+		Sleep(1000);
+		system("cls");
+		seller(uid);
+	}
+	}
+}
+
+
 void userOp(string uid) {
 	l1: switch (userHome()) {
 	case 49:
 		//TODO
-		Sleep(500);
+		Sleep(300);
 		system("cls");
 		buyer(uid);
 		break;
 	case 50:
 		//TODO
+		Sleep(300);
+		system("cls");
+		seller(uid);
 		break;
 	case 51:
 		//TODO
@@ -1322,10 +1819,11 @@ void marketSystem() {
 		break;
 	case USER_LOGIN: {
 		//TODO
-		string uid;
-		userLogin(uid);
+		string uid = "";
+		userLogin(uid, 0);
 		Sleep(1000);
 		system("cls");
+		// int ttt = 0;
 		userOp(uid);
 		break;
 	}
