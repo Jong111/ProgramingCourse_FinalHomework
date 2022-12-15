@@ -38,6 +38,20 @@ typedef struct {
 	vector<string> userMessage;*/
 }user;
 
+
+typedef struct {
+	string price;
+	string day;
+	string userID;
+}record;
+
+
+typedef struct {
+	string sender;
+	string receiver;
+	string content;
+} msg;
+
 extern int adLoginTimes;
 extern void appGetXY(int* res);
 extern void gotoxy(int x, int y);
@@ -89,4 +103,20 @@ extern void printCommodities4Seller(vector<cmd>& cmds, string& uid);
 extern string handleInvalidInput_12();
 extern void displayDiscriptionofCmd4Seller(vector<cmd>& res);
 extern string displayHelper(string&str, int a);
+extern int Min(int a, int b, int c);
+extern void searchComplex(string& str, vector<cmd>cmds, vector<cmd>& res);
+extern bool comp(pair<cmd, int> c1, pair<cmd, int> c2);
+extern int minDistance(string s1, string s2);
+extern void manageUserInformation(string uid);
+extern void back2manageUser(string uid);
+extern string handleInvalidInput_123();
+extern void readDatasRecord(vector<record>& records);
+extern void writeDatasRecord(vector<record>& records);
+extern void showRefillRecord(string&uid);
+extern void printRecords(vector<record>& records);
+extern void searchRecordUid(string& uid, vector<record>& records, vector<record>& res);
+extern void message(string uid);
+extern void back2message(string uid);
+extern void sendMessage(string& uid);
+extern void printReceivedMessage(string uid, vector<msg>& msgs);
 
